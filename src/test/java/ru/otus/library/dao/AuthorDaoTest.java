@@ -23,6 +23,7 @@ class AuthorDaoTest {
     @Test
     void shouldFindByName() {
         Author actualAuthor = dao.findByName(PUSHKIN_NAME);
+
         assertThat(actualAuthor.getId()).isEqualTo(0);
         assertThat(actualAuthor.getName()).isEqualTo(PUSHKIN_NAME);
     }
@@ -30,6 +31,7 @@ class AuthorDaoTest {
     @Test
     void shouldNotFindByWrongName() {
         Author actualAuthor = dao.findByName(TEST_AUTHOR_NAME);
+
         assertThat(actualAuthor).isNull();
     }
 
@@ -37,7 +39,9 @@ class AuthorDaoTest {
     void shouldCreateAuthor() {
         Author expectedAuthor = new Author();
         expectedAuthor.setName(TEST_AUTHOR_NAME);
+
         dao.create(expectedAuthor);
+
         Author actualAuthor = dao.findByName(TEST_AUTHOR_NAME);
         assertThat(actualAuthor).isEqualTo(expectedAuthor);
     }
@@ -45,6 +49,7 @@ class AuthorDaoTest {
     @Test
     void shouldNotCreateAuthorIfNull() {
         dao.create(null);
+
         Author actualAuthor = dao.findByName(TEST_AUTHOR_NAME);
         assertThat(actualAuthor).isNull();
     }
