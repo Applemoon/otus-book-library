@@ -26,7 +26,6 @@ public class GenreDao {
         try {
             return jdbc.queryForObject("select * from genre where name = :name", Map.of("name", name), new GenreMapper());
         } catch (EmptyResultDataAccessException e) {
-            System.err.println("No genre with name " + name);
             return null;
         }
     }
@@ -39,6 +38,7 @@ public class GenreDao {
         @Override
         public Genre mapRow(ResultSet rs, int rowNum) throws SQLException {
             Genre genre = new Genre();
+            genre.setId(rs.getLong("id"));
             genre.setName(rs.getString("name"));
             return genre;
         }
