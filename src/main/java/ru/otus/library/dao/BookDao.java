@@ -17,6 +17,7 @@ public class BookDao {
     private final NamedParameterJdbcOperations jdbc;
 
     public void create(Book book) {
+        if (book == null) return;
         jdbc.update("INSERT INTO book (title, author_id, genre_id) values (:title, :author_id, :genre_id)",
                 Map.of("title", book.getTitle(), "author_id", book.getAuthorId(),  "genre_id", book.getGenreId()));
     }
