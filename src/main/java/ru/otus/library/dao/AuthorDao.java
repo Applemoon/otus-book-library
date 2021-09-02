@@ -9,6 +9,7 @@ import ru.otus.library.domain.Author;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -18,16 +19,20 @@ public class AuthorDao {
 
     public void create(Author author) {
         if (author == null) return;
-        jdbc.update("INSERT INTO author (name) values (:name)", Map.of("name", author.getName()));
+        jdbc.update("insert into author (name) values (:name)", Map.of("name", author.getName()));
     }
 
     public Author findByName(String name) {
         try {
-            return jdbc.queryForObject("SELECT * FROM author WHERE name = :name", Map.of("name", name), new AuthorMapper());
+            return jdbc.queryForObject("select * from author where name = :name", Map.of("name", name), new AuthorMapper());
         } catch (EmptyResultDataAccessException e) {
             System.err.println("No author with name " + name);
             return null;
         }
+    }
+
+    public List<Author> findAll() {
+        return jdbc.query("select * from author", new AuthorMapper());
     }
 
     private static class AuthorMapper implements RowMapper<Author> {

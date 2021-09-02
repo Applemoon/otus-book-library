@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import ru.otus.library.dao.GenreDao;
 import ru.otus.library.domain.Genre;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class GenreService {
@@ -19,5 +21,9 @@ public class GenreService {
 
     public Genre findByName(String name) {
         return dao.findByName(name);
+    }
+
+    public List<Genre> findAll() {
+        return dao.findAll();
     }
 }

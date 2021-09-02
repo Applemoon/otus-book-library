@@ -9,6 +9,7 @@ import ru.otus.library.domain.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -18,16 +19,20 @@ public class GenreDao {
 
     public void create(Genre genre) {
         if (genre == null) return;
-        jdbc.update("INSERT INTO genre (name) values (:name)", Map.of("name", genre.getName()));
+        jdbc.update("insert into genre (name) values (:name)", Map.of("name", genre.getName()));
     }
 
     public Genre findByName(String name) {
         try {
-            return jdbc.queryForObject("SELECT * FROM genre WHERE name = :name", Map.of("name", name), new GenreMapper());
+            return jdbc.queryForObject("select * from genre where name = :name", Map.of("name", name), new GenreMapper());
         } catch (EmptyResultDataAccessException e) {
             System.err.println("No genre with name " + name);
             return null;
         }
+    }
+
+    public List<Genre> findAll() {
+        return jdbc.query("select * from genre", new GenreMapper());
     }
 
     private static class GenreMapper implements RowMapper<Genre> {

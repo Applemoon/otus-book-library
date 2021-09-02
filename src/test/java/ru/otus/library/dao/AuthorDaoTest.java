@@ -7,6 +7,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import ru.otus.library.domain.Author;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Author's dao")
@@ -52,5 +54,15 @@ class AuthorDaoTest {
 
         Author actualAuthor = dao.findByName(TEST_AUTHOR_NAME);
         assertThat(actualAuthor).isNull();
+    }
+
+    @Test
+    void shouldFindAllAuthors() {
+        List<Author> actualAuthors = dao.findAll();
+
+        Author author = new Author();
+        author.setName(PUSHKIN_NAME);
+        author.setId(0);
+        assertThat(actualAuthors).containsExactly(author);
     }
 }

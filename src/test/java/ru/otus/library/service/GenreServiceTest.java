@@ -8,6 +8,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.library.dao.GenreDao;
 import ru.otus.library.domain.Genre;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -59,5 +62,28 @@ class GenreServiceTest {
         Genre actualGenre = service.findByName(COMEDY_NAME);
 
         assertThat(actualGenre).isNull();
+    }
+
+    @Test
+    void shouldFindAllGenres() {
+        Genre expectedGenre = new Genre();
+        expectedGenre.setName(COMEDY_NAME);
+        expectedGenre.setId(0);
+        given(dao.findAll()).willReturn(Collections.singletonList(expectedGenre));
+
+        List<Genre> actualGenres = service.findAll();
+
+        assertThat(actualGenres).containsExactly(expectedGenre);
+        then(dao).should(times(1)).findAll();
+    }
+
+    @Test
+    void shouldFindNoGenresIfEmpty() {
+        given(dao.findAll()).willReturn(Collections.emptyList());
+
+        List<Genre> actualGenres = service.findAll();
+
+        assertThat(actualGenres).isEmpty();
+        then(dao).should(times(1)).findAll();
     }
 }

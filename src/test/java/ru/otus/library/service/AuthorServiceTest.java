@@ -8,6 +8,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.library.dao.AuthorDao;
 import ru.otus.library.domain.Author;
 
+import java.util.Collections;
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -59,5 +62,28 @@ class AuthorServiceTest {
         Author actualAuthor = service.findByName(PALAHNIUK_NAME);
 
         assertThat(actualAuthor).isNull();
+    }
+
+    @Test
+    void shouldFindAllAuthors() {
+        Author expectedAuthor = new Author();
+        expectedAuthor.setName(PALAHNIUK_NAME);
+        expectedAuthor.setId(0);
+        given(dao.findAll()).willReturn(Collections.singletonList(expectedAuthor));
+
+        List<Author> actualAuthors = service.findAll();
+
+        assertThat(actualAuthors).containsExactly(expectedAuthor);
+        then(dao).should(times(1)).findAll();
+    }
+
+    @Test
+    void shouldFindNoAuthorsIfEmpty() {
+        given(dao.findAll()).willReturn(Collections.emptyList());
+
+        List<Author> actualAuthors = service.findAll();
+
+        assertThat(actualAuthors).isEmpty();
+        then(dao).should(times(1)).findAll();
     }
 }

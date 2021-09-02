@@ -32,13 +32,23 @@ public class ShellService {
     public void createBook() {
         System.out.print("Введите название книги: ");
         String bookTitle = scanner.nextLine();
+
         System.out.print("Введите автора книги: ");
         String bookAuthorName = scanner.nextLine();
+        Author author = authorService.findByName(bookAuthorName);
+        if (author == null) {
+            System.out.print("Автор не найден");
+            return;
+        }
+
         System.out.print("Введите жанр: ");
         String genreName = scanner.nextLine();
+        Genre genre = genreService.findByName(genreName);
+        if (genre == null) {
+            System.out.print("Жанр не найден");
+            return;
+        }
 
-        Author author = authorService.findByName(bookAuthorName); // TODO: 01.09.2021 no author
-        Genre genre = genreService.findByName(genreName); // TODO: 01.09.2021 no genre
         bookService.create(bookTitle, author.getId(), genre.getId());
     }
 
