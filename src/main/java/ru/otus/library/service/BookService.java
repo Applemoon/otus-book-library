@@ -13,6 +13,7 @@ public class BookService {
     private final BookDao dao;
 
     public void create(String title, long authorId, long genreId) {
+        if (title == null || title.isBlank()) return;
         Book book = new Book();
         book.setTitle(title);
         book.setAuthorId(authorId);
