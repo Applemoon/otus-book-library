@@ -11,6 +11,7 @@ public class GenreService {
     private final GenreDao dao;
 
     public void create(String name) {
+        if (name == null || name.isBlank()) return;
         Genre genre = new Genre();
         genre.setName(name);
         dao.create(genre);
