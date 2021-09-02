@@ -18,6 +18,7 @@ class AuthorDaoTest {
 
     private static final String TEST_AUTHOR_NAME = "author";
     private static final String PUSHKIN_NAME = "Pushkin";
+    private static final String BRODSKY_NAME = "Brodsky";
 
     @Autowired
     private AuthorDao dao;
@@ -26,7 +27,6 @@ class AuthorDaoTest {
     void shouldFindByName() {
         Author actualAuthor = dao.findByName(PUSHKIN_NAME);
 
-        assertThat(actualAuthor.getId()).isEqualTo(0);
         assertThat(actualAuthor.getName()).isEqualTo(PUSHKIN_NAME);
     }
 
@@ -45,6 +45,7 @@ class AuthorDaoTest {
         dao.create(expectedAuthor);
 
         Author actualAuthor = dao.findByName(TEST_AUTHOR_NAME);
+        expectedAuthor.setId(actualAuthor.getId());
         assertThat(actualAuthor).isEqualTo(expectedAuthor);
     }
 
@@ -60,9 +61,13 @@ class AuthorDaoTest {
     void shouldFindAllAuthors() {
         List<Author> actualAuthors = dao.findAll();
 
-        Author author = new Author();
-        author.setName(PUSHKIN_NAME);
-        author.setId(0);
-        assertThat(actualAuthors).containsExactly(author);
+        Author pushkin = new Author();
+        pushkin.setId(1);
+        pushkin.setName(PUSHKIN_NAME);
+
+        Author brodsky = new Author();
+        brodsky.setId(2);
+        brodsky.setName(BRODSKY_NAME);
+        assertThat(actualAuthors).containsExactly(pushkin, brodsky);
     }
 }

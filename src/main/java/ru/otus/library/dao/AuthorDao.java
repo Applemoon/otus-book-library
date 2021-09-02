@@ -26,7 +26,6 @@ public class AuthorDao {
         try {
             return jdbc.queryForObject("select * from author where name = :name", Map.of("name", name), new AuthorMapper());
         } catch (EmptyResultDataAccessException e) {
-            System.err.println("No author with name " + name);
             return null;
         }
     }
@@ -39,6 +38,7 @@ public class AuthorDao {
         @Override
         public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
             Author author = new Author();
+            author.setId(rs.getLong("id"));
             author.setName(rs.getString("name"));
             return author;
         }
