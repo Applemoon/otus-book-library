@@ -1,6 +1,7 @@
 package ru.otus.library.dao;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
@@ -16,11 +17,17 @@ public class AuthorDao {
     private final NamedParameterJdbcOperations jdbc;
 
     public void create(Author author) {
+        if (author == null) return;
         jdbc.update("INSERT INTO author (name) values (:name)", Map.of("name", author.getName()));
     }
 
     public Author findByName(String name) {
-        return jdbc.queryForObject("SELECT * FROM author WHERE name = :name", Map.of("name", name), new AuthorMapper());
+        try {
+            return jdbc.queryForObject("SELECT * FROM author WHERE name = :name", Map.of("name", name), new AuthorMapper());
+        } catch (EmptyResultDataAccessException e) {
+            System.err.println("No author with name " + name);
+            return null;
+        }
     }
 
     private static class AuthorMapper implements RowMapper<Author> {

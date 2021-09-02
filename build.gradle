@@ -18,15 +18,16 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'com.h2database:h2'
-    annotationProcessor 'org.projectlombok:lombok'
+    implementation 'org.springframework.boot:spring-boot-starter:2.5.4'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc:2.5.4'
+    implementation 'com.h2database:h2:1.4.200'
+    annotationProcessor 'org.projectlombok:lombok:1.18.20'
 
     compileOnly 'org.springframework.shell:spring-shell-starter:2.0.1.RELEASE'
-    compileOnly 'org.projectlombok:lombok'
+    compileOnly 'org.projectlombok:lombok:1.18.20'
 
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test:2.5.4'
+    testImplementation 'org.assertj:assertj-core:3.20.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 }
