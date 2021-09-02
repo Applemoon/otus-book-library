@@ -20,6 +20,7 @@ class GenreDaoTest {
 
     private static final String TEST_GENRE_NAME = "genre";
     private static final String NOVEL_NAME = "novel";
+    private static final String FANTASY_NAME = "fantasy";
 
     @Autowired
     private GenreDao dao;
@@ -28,7 +29,6 @@ class GenreDaoTest {
     void shouldFindByName() {
         Genre actualGenre = dao.findByName(NOVEL_NAME);
 
-        assertThat(actualGenre.getId()).isEqualTo(0);
         assertThat(actualGenre.getName()).isEqualTo(NOVEL_NAME);
     }
 
@@ -47,6 +47,7 @@ class GenreDaoTest {
         dao.create(expectedGenre);
 
         Genre actualGenre = dao.findByName(TEST_GENRE_NAME);
+        expectedGenre.setId(actualGenre.getId());
         assertThat(actualGenre).isEqualTo(expectedGenre);
     }
 
@@ -62,9 +63,13 @@ class GenreDaoTest {
     void shouldFindAllGenres() {
         List<Genre> actualGenres = dao.findAll();
 
-        Genre genre = new Genre();
-        genre.setName(NOVEL_NAME);
-        genre.setId(0);
-        assertThat(actualGenres).containsExactly(genre);
+        Genre novel = new Genre();
+        novel.setId(1);
+        novel.setName(NOVEL_NAME);
+
+        Genre fantasy = new Genre();
+        fantasy.setId(2);
+        fantasy.setName(FANTASY_NAME);
+        assertThat(actualGenres).containsExactly(novel, fantasy);
     }
 }

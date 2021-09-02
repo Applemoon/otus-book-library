@@ -31,6 +31,7 @@ class BookDaoTest {
 
         dao.create(expectedBook);
 
+        expectedBook.setId(2);
         List<Book> actualBooks = dao.findAll();
         assertThat(actualBooks).contains(expectedBook);
     }
@@ -49,10 +50,74 @@ class BookDaoTest {
     void shouldFindAllBooks() {
         List<Book> actualBooks = dao.findAll();
 
-        Book book = new Book();
-        book.setTitle(EUGENE_ONEGIN_TITLE);
-        book.setAuthorId(0);
-        book.setGenreId(0);
-        assertThat(actualBooks).containsExactly(book);
+        Book expectedBook = new Book();
+        expectedBook.setId(1);
+        expectedBook.setTitle(EUGENE_ONEGIN_TITLE);
+        expectedBook.setAuthorId(0);
+        expectedBook.setGenreId(0);
+        assertThat(actualBooks).containsExactly(expectedBook);
+    }
+
+    @Test
+    void shouldFindBookByTitle() {
+        Book actualBook = dao.findByTitle(EUGENE_ONEGIN_TITLE);
+
+        Book expectedBook = new Book();
+        expectedBook.setId(actualBook.getId());
+        expectedBook.setTitle(EUGENE_ONEGIN_TITLE);
+        expectedBook.setAuthorId(0);
+        expectedBook.setGenreId(0);
+        assertThat(actualBook).isEqualTo(expectedBook);
+    }
+
+    @Test
+    void shouldNotFindBookByWrongTitle() {
+        Book actualBook = dao.findByTitle(TEST_BOOK_TITLE);
+
+        assertThat(actualBook).isNull();
+    }
+
+    @Test
+    void shouldFindBookById() {
+        Book actualBook = dao.findById(1);
+
+        Book expectedBook = new Book();
+        expectedBook.setId(1);
+        expectedBook.setTitle(EUGENE_ONEGIN_TITLE);
+        expectedBook.setAuthorId(0);
+        expectedBook.setGenreId(0);
+        assertThat(actualBook).isEqualTo(expectedBook);
+    }
+
+    @Test
+    void shouldNotFindBookByWrongId() {
+        Book actualBook = dao.findById(100);
+
+        assertThat(actualBook).isNull();
+    }
+
+    @Test
+    void shouldUpdateBook() {
+        Book expectedBook = new Book();
+        expectedBook.setId(1);
+        expectedBook.setTitle(TEST_BOOK_TITLE);
+        expectedBook.setAuthorId(1);
+        expectedBook.setGenreId(1);
+
+        dao.update(expectedBook);
+
+        Book actualBook = dao.findById(expectedBook.getId());
+        assertThat(actualBook).isEqualTo(expectedBook);
+    }
+
+    @Test
+    void shouldDeleteBookById() {
+        final int firstSize = dao.findAll().size();
+
+        boolean deleted = dao.deleteById(1);
+
+        assertThat(deleted).isTrue();
+        final int secondSize = dao.findAll().size();
+        assertThat(secondSize).isEqualTo(firstSize - 1);
     }
 }

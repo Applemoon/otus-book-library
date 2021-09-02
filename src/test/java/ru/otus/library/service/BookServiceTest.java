@@ -67,4 +67,44 @@ class BookServiceTest {
         assertThat(actualBooks).isEmpty();
         then(dao).should(times(1)).findAll();
     }
+
+    @Test
+    void shouldFindBookById() {
+        Book expectedBook = new Book();
+        expectedBook.setTitle(SIA_TITLE);
+        expectedBook.setGenreId(0);
+        expectedBook.setAuthorId(0);
+        given(dao.findById(10)).willReturn(expectedBook);
+
+        Book actualBook = service.findById(10);
+
+        assertThat(actualBook).isEqualTo(expectedBook);
+    }
+
+    @Test
+    void shouldUpdateBook() {
+        Book actualBook = new Book();
+        actualBook.setId(10);
+        actualBook.setTitle(SIA_TITLE);
+        actualBook.setAuthorId(0);
+        actualBook.setGenreId(0);
+
+        service.update(actualBook.getId(), actualBook.getTitle(), actualBook.getAuthorId(), actualBook.getGenreId());
+
+        then(dao).should(times(1)).update(actualBook);
+    }
+
+    @Test
+    void shouldNotUpdateBookWithEmptyTitle() {
+        service.update(10, "", 0, 0);
+
+        then(dao).shouldHaveNoInteractions();
+    }
+
+    @Test
+    void shouldDeleteById() {
+        service.deleteById(10);
+
+        then(dao).should(times(1)).deleteById(10);
+    }
 }
