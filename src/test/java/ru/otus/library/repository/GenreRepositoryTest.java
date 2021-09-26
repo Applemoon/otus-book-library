@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.library.domain.Genre;
 
@@ -18,16 +19,20 @@ class GenreRepositoryTest {
 
     private static final String TEST_GENRE_NAME = "genre";
     private static final String NOVEL_NAME = "novel";
-    private static final String FANTASY_NAME = "fantasy";
+    private static final long NOVEL_ID = 1;
 
     @Autowired
     private GenreRepository repository;
+
+    @Autowired
+    private TestEntityManager em;
 
     @Test
     void shouldFindByName() {
         Genre actualGenre = repository.findByName(NOVEL_NAME);
 
-        assertThat(actualGenre.getName()).isEqualTo(NOVEL_NAME);
+        Genre expectedGenre = em.find(Genre.class, NOVEL_ID);
+        assertThat(actualGenre).usingRecursiveComparison().isEqualTo(expectedGenre);
     }
 
     @Test
@@ -44,8 +49,7 @@ class GenreRepositoryTest {
 
         repository.create(expectedGenre);
 
-        Genre actualGenre = repository.findByName(TEST_GENRE_NAME);
-        expectedGenre.setId(actualGenre.getId());
+        Genre actualGenre = em.find(Genre.class, 3L);
         assertThat(actualGenre).isEqualTo(expectedGenre);
     }
 
@@ -61,13 +65,9 @@ class GenreRepositoryTest {
     void shouldFindAllGenres() {
         List<Genre> actualGenres = repository.findAll();
 
-        Genre novel = new Genre();
-        novel.setId(1);
-        novel.setName(NOVEL_NAME);
-
-        Genre fantasy = new Genre();
-        fantasy.setId(2);
-        fantasy.setName(FANTASY_NAME);
-        assertThat(actualGenres).containsExactly(novel, fantasy);
+        List<Genre> expectedAuthors = em.getEntityManager()
+                .createQuery("select g from Genre g", Genre.class)
+                .getResultList();
+        assertThat(actualGenres).usingRecursiveComparison().isEqualTo(expectedAuthors);
     }
 }

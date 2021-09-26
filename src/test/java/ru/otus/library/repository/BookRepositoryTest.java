@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.library.domain.Book;
 
@@ -18,22 +19,23 @@ class BookRepositoryTest {
 
     private static final String TEST_BOOK_TITLE = "The Book";
     private static final String EUGENE_ONEGIN_TITLE = "Eugene Onegin";
+    private static final String DISCOVERY_TITLE = "Discovery";
+    private static final long EUGENE_ONEGIN_ID = 1;
 
     @Autowired
     private BookRepository repository;
 
+    @Autowired
+    private TestEntityManager em;
+
     @Test
     void shouldCreateBook() {
-        Book expectedBook = new Book();
-        expectedBook.setTitle(TEST_BOOK_TITLE);
-//        expectedBook.setAuthorId(0);
-//        expectedBook.setGenreId(0);
+        Book expectedBook = new Book(3, TEST_BOOK_TITLE);
 
         repository.create(expectedBook);
 
-        expectedBook.setId(2);
-        List<Book> actualBooks = repository.findAll();
-        assertThat(actualBooks).contains(expectedBook);
+        Book actualBook = em.find(Book.class, 3L);
+        assertThat(actualBook).usingRecursiveComparison().isEqualTo(expectedBook);
     }
 
     @Test
@@ -42,31 +44,26 @@ class BookRepositoryTest {
 
         repository.create(null);
 
-        final int secondSize = repository.findAll().size();
-        assertThat(secondSize).isEqualTo(firstSize);
+        assertThat(em.getEntityManager()
+                .createQuery("SELECT COUNT(*) FROM Book b", Long.class)
+                .getSingleResult())
+                .isEqualTo(firstSize);
     }
 
     @Test
     void shouldFindAllBooks() {
         List<Book> actualBooks = repository.findAll();
 
-        Book expectedBook = new Book();
-        expectedBook.setId(1);
-        expectedBook.setTitle(EUGENE_ONEGIN_TITLE);
-//        expectedBook.setAuthorId(0);
-//        expectedBook.setGenreId(0);
-        assertThat(actualBooks).containsExactly(expectedBook);
+        Book eugeneOneginBook = new Book(1, EUGENE_ONEGIN_TITLE);
+        Book discoveryBook = new Book(2, DISCOVERY_TITLE);
+        assertThat(actualBooks).usingRecursiveComparison().isEqualTo(List.of(eugeneOneginBook, discoveryBook));
     }
 
     @Test
     void shouldFindBookByTitle() {
         Book actualBook = repository.findByTitle(EUGENE_ONEGIN_TITLE);
+        Book expectedBook = em.find(Book.class, EUGENE_ONEGIN_ID);
 
-        Book expectedBook = new Book();
-        expectedBook.setId(actualBook.getId());
-        expectedBook.setTitle(EUGENE_ONEGIN_TITLE);
-//        expectedBook.setAuthorId(0);
-//        expectedBook.setGenreId(0);
         assertThat(actualBook).isEqualTo(expectedBook);
     }
 
@@ -80,12 +77,8 @@ class BookRepositoryTest {
     @Test
     void shouldFindBookById() {
         Book actualBook = repository.findById(1);
+        Book expectedBook = em.find(Book.class, EUGENE_ONEGIN_ID);
 
-        Book expectedBook = new Book();
-        expectedBook.setId(1);
-        expectedBook.setTitle(EUGENE_ONEGIN_TITLE);
-//        expectedBook.setAuthorId(0);
-//        expectedBook.setGenreId(0);
         assertThat(actualBook).isEqualTo(expectedBook);
     }
 
@@ -107,7 +100,7 @@ class BookRepositoryTest {
         repository.updateTitleById(1, TEST_BOOK_TITLE);
 
         Book actualBook = repository.findById(expectedBook.getId());
-        assertThat(actualBook).isEqualTo(expectedBook);
+        assertThat(actualBook).usingRecursiveComparison().isEqualTo(actualBook);
     }
 
     @Test

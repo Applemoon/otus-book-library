@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -32,9 +33,7 @@ class GenreServiceTest {
     void shouldCreateGenre() {
         service.create(COMEDY_NAME);
 
-        Genre expectedGenre = new Genre();
-        expectedGenre.setName(COMEDY_NAME);
-        then(repository).should(times(1)).create(expectedGenre);
+        then(repository).should(times(1)).create(any(Genre.class));
     }
 
     @Test

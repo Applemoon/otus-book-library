@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.otus.library.domain.Book;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -18,6 +19,7 @@ public class BookRepository {
     private EntityManager em;
 
     public void create(Book book) {
+        if (book == null) return;
         if (book.getId() == 0) {
             em.persist(book);
 //            return book;
@@ -33,7 +35,11 @@ public class BookRepository {
     public Book findByTitle(String title) {
         TypedQuery<Book> query = em.createQuery("select b from Book b where b.title = :title", Book.class);
         query.setParameter("title", title);
-        return query.getSingleResult();
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public Book findById(long id) {

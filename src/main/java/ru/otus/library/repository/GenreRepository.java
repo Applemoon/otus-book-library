@@ -5,6 +5,7 @@ import org.springframework.stereotype.Repository;
 import ru.otus.library.domain.Genre;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import java.util.List;
@@ -17,6 +18,7 @@ public class GenreRepository {
     private EntityManager em;
 
     public void create(Genre genre) {
+        if (genre == null) return;
         if (genre.getId() == 0) {
             em.persist(genre);
 //            return genre;
@@ -28,7 +30,11 @@ public class GenreRepository {
     public Genre findByName(String name) {
         TypedQuery<Genre> query = em.createQuery("select g from Genre g where g.name = :name", Genre.class);
         query.setParameter("name", name);
-        return query.getSingleResult();
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     public List<Genre> findAll() {

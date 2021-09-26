@@ -1,3 +1,3 @@
-insert into author (name) values ('Pushkin'), ('Brodsky');
-insert into genre (name) values ('novel'), ('fantasy');
-insert into book (title, author_id, genre_id) values ('Eugene Onegin', 0, 0);
+insert into author (id, name) values (1, 'Pushkin'), (2, 'Brodsky');
+insert into genre (id, name) values (1, 'novel'), (2, 'fantasy');
+insert into book (title, author_id, genre_id) values ('Eugene Onegin', 1, 1), ('Discovery', 2, 1);

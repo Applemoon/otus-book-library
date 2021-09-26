@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
 import ru.otus.library.domain.Author;
 
@@ -18,16 +19,20 @@ class AuthorRepositoryTest {
 
     private static final String TEST_AUTHOR_NAME = "author";
     private static final String PUSHKIN_NAME = "Pushkin";
-    private static final String BRODSKY_NAME = "Brodsky";
+    private static final long PUSHKIN_ID = 1;
 
     @Autowired
     private AuthorRepository repository;
 
+    @Autowired
+    private TestEntityManager em;
+
     @Test
     void shouldFindByName() {
-//        Author actualAuthor = repository.findByName(PUSHKIN_NAME);
-//
-//        assertThat(actualAuthor.getName()).isEqualTo(PUSHKIN_NAME);
+        Author actualAuthor = repository.findByName(PUSHKIN_NAME);
+
+        Author expectedAuthor = em.find(Author.class, PUSHKIN_ID);
+        assertThat(actualAuthor).usingRecursiveComparison().isEqualTo(expectedAuthor);
     }
 
     @Test
@@ -44,8 +49,7 @@ class AuthorRepositoryTest {
 
         repository.create(expectedAuthor);
 
-        Author actualAuthor = repository.findByName(TEST_AUTHOR_NAME);
-        expectedAuthor.setId(actualAuthor.getId());
+        Author actualAuthor = em.find(Author.class, 3L);
         assertThat(actualAuthor).isEqualTo(expectedAuthor);
     }
 
@@ -61,13 +65,9 @@ class AuthorRepositoryTest {
     void shouldFindAllAuthors() {
         List<Author> actualAuthors = repository.findAll();
 
-        Author pushkin = new Author();
-        pushkin.setId(1);
-        pushkin.setName(PUSHKIN_NAME);
-
-        Author brodsky = new Author();
-        brodsky.setId(2);
-        brodsky.setName(BRODSKY_NAME);
-        assertThat(actualAuthors).containsExactly(pushkin, brodsky);
+        List<Author> expectedAuthors = em.getEntityManager()
+                .createQuery("select a from Author a", Author.class)
+                .getResultList();
+        assertThat(actualAuthors).usingRecursiveComparison().isEqualTo(expectedAuthors);
     }
 }

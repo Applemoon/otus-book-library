@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.times;
@@ -32,9 +33,7 @@ class AuthorServiceTest {
     void shouldCreateAuthor() {
         service.create(PALAHNIUK_NAME);
 
-        Author expectedAuthor = new Author();
-        expectedAuthor.setName(PALAHNIUK_NAME);
-        then(repository).should(times(1)).create(expectedAuthor);
+        then(repository).should(times(1)).create(any(Author.class));
     }
 
     @Test
