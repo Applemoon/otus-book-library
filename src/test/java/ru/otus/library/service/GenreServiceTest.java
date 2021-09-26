@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.otus.library.dao.GenreDao;
+import ru.otus.library.repository.GenreRepository;
 import ru.otus.library.domain.Genre;
 
 import java.util.Collections;
@@ -26,7 +26,7 @@ class GenreServiceTest {
     private GenreService service;
 
     @MockBean
-    private GenreDao dao;
+    private GenreRepository repository;
 
     @Test
     void shouldCreateGenre() {
@@ -34,21 +34,21 @@ class GenreServiceTest {
 
         Genre expectedGenre = new Genre();
         expectedGenre.setName(COMEDY_NAME);
-        then(dao).should(times(1)).create(expectedGenre);
+        then(repository).should(times(1)).create(expectedGenre);
     }
 
     @Test
     void shouldNotCreateGenreWithoutName() {
         service.create(null);
 
-        then(dao).shouldHaveNoInteractions();
+        then(repository).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldFindGenreByName() {
         Genre expectedGenre = new Genre();
         expectedGenre.setName(COMEDY_NAME);
-        given(dao.findByName(COMEDY_NAME)).willReturn(expectedGenre);
+        given(repository.findByName(COMEDY_NAME)).willReturn(expectedGenre);
 
         Genre actualGenre = service.findByName(COMEDY_NAME);
 
@@ -57,7 +57,7 @@ class GenreServiceTest {
 
     @Test
     void shouldNotFindGenreByWrongName() {
-        given(dao.findByName(COMEDY_NAME)).willReturn(null);
+        given(repository.findByName(COMEDY_NAME)).willReturn(null);
 
         Genre actualGenre = service.findByName(COMEDY_NAME);
 
@@ -69,21 +69,21 @@ class GenreServiceTest {
         Genre expectedGenre = new Genre();
         expectedGenre.setName(COMEDY_NAME);
         expectedGenre.setId(0);
-        given(dao.findAll()).willReturn(Collections.singletonList(expectedGenre));
+        given(repository.findAll()).willReturn(Collections.singletonList(expectedGenre));
 
         List<Genre> actualGenres = service.findAll();
 
         assertThat(actualGenres).containsExactly(expectedGenre);
-        then(dao).should(times(1)).findAll();
+        then(repository).should(times(1)).findAll();
     }
 
     @Test
     void shouldFindNoGenresIfEmpty() {
-        given(dao.findAll()).willReturn(Collections.emptyList());
+        given(repository.findAll()).willReturn(Collections.emptyList());
 
         List<Genre> actualGenres = service.findAll();
 
         assertThat(actualGenres).isEmpty();
-        then(dao).should(times(1)).findAll();
+        then(repository).should(times(1)).findAll();
     }
 }

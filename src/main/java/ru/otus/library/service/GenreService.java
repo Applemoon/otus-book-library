@@ -2,7 +2,7 @@ package ru.otus.library.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.library.dao.GenreDao;
+import ru.otus.library.repository.GenreRepository;
 import ru.otus.library.domain.Genre;
 
 import java.util.List;
@@ -10,20 +10,20 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class GenreService {
-    private final GenreDao dao;
+    private final GenreRepository repository;
 
     public void create(String name) {
         if (name == null || name.isBlank()) return;
         Genre genre = new Genre();
         genre.setName(name);
-        dao.create(genre);
+        repository.create(genre);
     }
 
     public Genre findByName(String name) {
-        return dao.findByName(name);
+        return repository.findByName(name);
     }
 
     public List<Genre> findAll() {
-        return dao.findAll();
+        return repository.findAll();
     }
 }

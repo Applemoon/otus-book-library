@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.otus.library.dao.BookDao;
+import ru.otus.library.repository.BookRepository;
 import ru.otus.library.domain.Book;
 
 import java.util.Collections;
@@ -26,55 +26,55 @@ class BookServiceTest {
     private BookService service;
 
     @MockBean
-    private BookDao dao;
+    private BookRepository repository;
 
     @Test
     void shouldCreateBook() {
-        service.create(SIA_TITLE, 0, 0);
+        service.create(SIA_TITLE);
 
         Book expectedBook = new Book();
         expectedBook.setTitle(SIA_TITLE);
-        then(dao).should(times(1)).create(expectedBook);
+        then(repository).should(times(1)).create(expectedBook);
     }
 
     @Test
     void shouldNotCreateBookWithoutName() {
-        service.create(null, 0, 0);
+        service.create(null);
 
-        then(dao).shouldHaveNoInteractions();
+        then(repository).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldFindAllBooks() {
         Book expectedBook = new Book();
         expectedBook.setTitle(SIA_TITLE);
-        expectedBook.setGenreId(0);
-        expectedBook.setAuthorId(0);
-        given(dao.findAll()).willReturn(Collections.singletonList(expectedBook));
+//        expectedBook.setGenreId(0);
+//        expectedBook.setAuthorId(0);
+        given(repository.findAll()).willReturn(Collections.singletonList(expectedBook));
 
         List<Book> actualBooks = service.findAll();
 
         assertThat(actualBooks).containsExactly(expectedBook);
-        then(dao).should(times(1)).findAll();
+        then(repository).should(times(1)).findAll();
     }
 
     @Test
     void shouldFindNoBooksIfEmpty() {
-        given(dao.findAll()).willReturn(Collections.emptyList());
+        given(repository.findAll()).willReturn(Collections.emptyList());
 
         List<Book> actualBooks = service.findAll();
 
         assertThat(actualBooks).isEmpty();
-        then(dao).should(times(1)).findAll();
+        then(repository).should(times(1)).findAll();
     }
 
     @Test
     void shouldFindBookById() {
         Book expectedBook = new Book();
         expectedBook.setTitle(SIA_TITLE);
-        expectedBook.setGenreId(0);
-        expectedBook.setAuthorId(0);
-        given(dao.findById(10)).willReturn(expectedBook);
+//        expectedBook.setGenreId(0);
+//        expectedBook.setAuthorId(0);
+        given(repository.findById(10)).willReturn(expectedBook);
 
         Book actualBook = service.findById(10);
 
@@ -86,25 +86,25 @@ class BookServiceTest {
         Book actualBook = new Book();
         actualBook.setId(10);
         actualBook.setTitle(SIA_TITLE);
-        actualBook.setAuthorId(0);
-        actualBook.setGenreId(0);
+//        actualBook.setAuthorId(0);
+//        actualBook.setGenreId(0);
 
-        service.update(actualBook.getId(), actualBook.getTitle(), actualBook.getAuthorId(), actualBook.getGenreId());
+        service.update(actualBook.getId(), actualBook.getTitle());
 
-        then(dao).should(times(1)).update(actualBook);
+        then(repository).should(times(1)).updateTitleById(10, SIA_TITLE);
     }
 
     @Test
     void shouldNotUpdateBookWithEmptyTitle() {
-        service.update(10, "", 0, 0);
+        service.update(10, "");
 
-        then(dao).shouldHaveNoInteractions();
+        then(repository).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldDeleteById() {
         service.deleteById(10);
 
-        then(dao).should(times(1)).deleteById(10);
+        then(repository).should(times(1)).deleteById(10);
     }
 }

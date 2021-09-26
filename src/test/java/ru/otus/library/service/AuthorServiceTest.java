@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import ru.otus.library.dao.AuthorDao;
+import ru.otus.library.repository.AuthorRepository;
 import ru.otus.library.domain.Author;
 
 import java.util.Collections;
@@ -26,7 +26,7 @@ class AuthorServiceTest {
     private AuthorService service;
 
     @MockBean
-    private AuthorDao dao;
+    private AuthorRepository repository;
 
     @Test
     void shouldCreateAuthor() {
@@ -34,21 +34,21 @@ class AuthorServiceTest {
 
         Author expectedAuthor = new Author();
         expectedAuthor.setName(PALAHNIUK_NAME);
-        then(dao).should(times(1)).create(expectedAuthor);
+        then(repository).should(times(1)).create(expectedAuthor);
     }
 
     @Test
     void shouldNotCreateAuthorWithoutName() {
         service.create(null);
 
-        then(dao).shouldHaveNoInteractions();
+        then(repository).shouldHaveNoInteractions();
     }
 
     @Test
     void shouldFindAuthorByName() {
         Author expectedAuthor = new Author();
         expectedAuthor.setName(PALAHNIUK_NAME);
-        given(dao.findByName(PALAHNIUK_NAME)).willReturn(expectedAuthor);
+        given(repository.findByName(PALAHNIUK_NAME)).willReturn(expectedAuthor);
 
         Author actualAuthor = service.findByName(PALAHNIUK_NAME);
 
@@ -57,7 +57,7 @@ class AuthorServiceTest {
 
     @Test
     void shouldNotFindAuthorByWrongName() {
-        given(dao.findByName(PALAHNIUK_NAME)).willReturn(null);
+        given(repository.findByName(PALAHNIUK_NAME)).willReturn(null);
 
         Author actualAuthor = service.findByName(PALAHNIUK_NAME);
 
@@ -69,21 +69,21 @@ class AuthorServiceTest {
         Author expectedAuthor = new Author();
         expectedAuthor.setName(PALAHNIUK_NAME);
         expectedAuthor.setId(0);
-        given(dao.findAll()).willReturn(Collections.singletonList(expectedAuthor));
+        given(repository.findAll()).willReturn(Collections.singletonList(expectedAuthor));
 
         List<Author> actualAuthors = service.findAll();
 
         assertThat(actualAuthors).containsExactly(expectedAuthor);
-        then(dao).should(times(1)).findAll();
+        then(repository).should(times(1)).findAll();
     }
 
     @Test
     void shouldFindNoAuthorsIfEmpty() {
-        given(dao.findAll()).willReturn(Collections.emptyList());
+        given(repository.findAll()).willReturn(Collections.emptyList());
 
         List<Author> actualAuthors = service.findAll();
 
         assertThat(actualAuthors).isEmpty();
-        then(dao).should(times(1)).findAll();
+        then(repository).should(times(1)).findAll();
     }
 }
