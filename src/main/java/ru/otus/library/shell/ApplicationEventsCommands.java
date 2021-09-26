@@ -61,21 +61,21 @@ public class ApplicationEventsCommands {
         System.out.print("Введите название книги: ");
         String title = scanner.nextLine();
 
-//        System.out.print("Введите автора книги: "); TODO move logic
-//        String bookAuthorName = scanner.nextLine();
-//        Author author = authorService.findByName(bookAuthorName);
-//        if (author == null) {
-//            return "Автор не найден";
-//        }
-//
-//        System.out.print("Введите жанр: ");
-//        String genreName = scanner.nextLine();
-//        Genre genre = genreService.findByName(genreName);
-//        if (genre == null) {
-//            return "Жанр не найден";
-//        }
+        System.out.print("Введите автора книги: ");
+        String bookAuthorName = scanner.nextLine();
+        Author author = authorService.findByName(bookAuthorName);
+        if (author == null) {
+            return "Автор не найден";
+        }
 
-        bookService.create(title);
+        System.out.print("Введите жанр: ");
+        String genreName = scanner.nextLine();
+        Genre genre = genreService.findByName(genreName);
+        if (genre == null) {
+            return "Жанр не найден";
+        }
+
+        bookService.create(title, author.getId(), genre.getId());
         return "Книга создана";
     }
 
@@ -111,21 +111,21 @@ public class ApplicationEventsCommands {
         System.out.print("Введите новое название книги: ");
         String newTitle = scanner.nextLine();
 
-//        System.out.print("Введите нового автора книги: "); TODO move logic
-//        String newAuthorName = scanner.nextLine();
-//        Author newAuthor = authorService.findByName(newAuthorName);
-//        if (newAuthor == null) {
-//            return "Автор не найден";
-//        }
-//
-//        System.out.print("Введите новый жанр: ");
-//        String newGenreName = scanner.nextLine();
-//        Genre newGenre = genreService.findByName(newGenreName);
-//        if (newGenre == null) {
-//            return "Жанр не найден";
-//        }
+        System.out.print("Введите нового автора книги: ");
+        String newAuthorName = scanner.nextLine();
+        Author newAuthor = authorService.findByName(newAuthorName);
+        if (newAuthor == null) {
+            return "Автор не найден";
+        }
 
-        bookService.update(id, newTitle);
+        System.out.print("Введите новый жанр: ");
+        String newGenreName = scanner.nextLine();
+        Genre newGenre = genreService.findByName(newGenreName);
+        if (newGenre == null) {
+            return "Жанр не найден";
+        }
+
+        bookService.update(id, newTitle, newAuthor.getId(), newGenre.getId());
         return "Книга обновлена";
     }
 

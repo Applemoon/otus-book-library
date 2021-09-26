@@ -21,10 +21,8 @@ public class GenreRepository {
         if (genre == null) return;
         if (genre.getId() == 0) {
             em.persist(genre);
-//            return genre;
         }
         em.merge(genre);
-//        return em.merge(genre);
     }
 
     public Genre findByName(String name) {

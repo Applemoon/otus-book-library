@@ -12,10 +12,12 @@ import java.util.List;
 public class BookService {
     private final BookRepository repository;
 
-    public void create(String title) {
+    public void create(String title, long authorId, long genreId) {
         if (title == null || title.isBlank()) return;
         Book book = new Book();
         book.setTitle(title);
+        book.setAuthorId(authorId);
+        book.setGenreId(genreId);
         repository.create(book);
     }
 
@@ -32,9 +34,9 @@ public class BookService {
         return repository.findById(id);
     }
 
-    public void update(long id, String title) {
+    public void update(long id, String title, long authorId, long genreId) {
         if (title == null || title.isBlank()) return;
-        repository.updateTitleById(id, title);
+        repository.updateById(id, title, authorId, genreId);
     }
 
     public boolean deleteById(long id) {

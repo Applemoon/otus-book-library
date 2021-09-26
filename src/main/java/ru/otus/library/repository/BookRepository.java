@@ -22,10 +22,8 @@ public class BookRepository {
         if (book == null) return;
         if (book.getId() == 0) {
             em.persist(book);
-//            return book;
         }
         em.merge(book);
-//        return em.merge(book);
     }
 
     public List<Book> findAll() {
@@ -46,10 +44,13 @@ public class BookRepository {
         return em.find(Book.class, id);
     }
 
-    public void updateTitleById(long id, String title) {
-        Query query = em.createQuery("update Book b set b.title = :title where b.id = :id");
+    public void updateById(long id, String title, long authorId, long genreId) {
+        Query query = em.createQuery(
+                "update Book b set b.title = :title, b.authorId = :authorId, b.genreId = :genreId where b.id = :id");
         query.setParameter("title", title);
         query.setParameter("id", id);
+        query.setParameter("authorId", authorId);
+        query.setParameter("genreId", genreId);
         query.executeUpdate();
     }
 

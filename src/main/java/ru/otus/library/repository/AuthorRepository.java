@@ -21,10 +21,8 @@ public class AuthorRepository {
         if (author == null) return;
         if (author.getId() == 0) {
             em.persist(author);
-//            return author;
         }
         em.merge(author);
-//        return em.merge(author);
     }
 
     public Author findByName(String name) {

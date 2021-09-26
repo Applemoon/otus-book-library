@@ -30,7 +30,7 @@ class BookRepositoryTest {
 
     @Test
     void shouldCreateBook() {
-        Book expectedBook = new Book(3, TEST_BOOK_TITLE);
+        Book expectedBook = new Book(3, TEST_BOOK_TITLE, 1L, 1L);
 
         repository.create(expectedBook);
 
@@ -45,7 +45,7 @@ class BookRepositoryTest {
         repository.create(null);
 
         assertThat(em.getEntityManager()
-                .createQuery("SELECT COUNT(*) FROM Book b", Long.class)
+                .createQuery("select count(*) from Book b", Long.class)
                 .getSingleResult())
                 .isEqualTo(firstSize);
     }
@@ -54,8 +54,8 @@ class BookRepositoryTest {
     void shouldFindAllBooks() {
         List<Book> actualBooks = repository.findAll();
 
-        Book eugeneOneginBook = new Book(1, EUGENE_ONEGIN_TITLE);
-        Book discoveryBook = new Book(2, DISCOVERY_TITLE);
+        Book eugeneOneginBook = new Book(1, EUGENE_ONEGIN_TITLE, 1L, 1L);
+        Book discoveryBook = new Book(2, DISCOVERY_TITLE, 2L, 1L);
         assertThat(actualBooks).usingRecursiveComparison().isEqualTo(List.of(eugeneOneginBook, discoveryBook));
     }
 
@@ -94,10 +94,10 @@ class BookRepositoryTest {
         Book expectedBook = new Book();
         expectedBook.setId(1);
         expectedBook.setTitle(TEST_BOOK_TITLE);
-//        expectedBook.setAuthorId(1);
-//        expectedBook.setGenreId(1);
+        expectedBook.setAuthorId(1L);
+        expectedBook.setGenreId(1L);
 
-        repository.updateTitleById(1, TEST_BOOK_TITLE);
+        repository.updateById(1, TEST_BOOK_TITLE, 1, 1);
 
         Book actualBook = repository.findById(expectedBook.getId());
         assertThat(actualBook).usingRecursiveComparison().isEqualTo(actualBook);
