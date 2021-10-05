@@ -10,6 +10,7 @@ import ru.otus.library.domain.Book;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -33,7 +34,7 @@ class BookServiceTest {
     void shouldCreateBook() {
         service.create(SIA_TITLE, 1, 1);
 
-        then(repository).should(times(1)).create(any(Book.class));
+        then(repository).should(times(1)).save(any(Book.class));
     }
 
     @Test
@@ -69,7 +70,7 @@ class BookServiceTest {
     void shouldFindBookById() {
         Book expectedBook = new Book();
         expectedBook.setTitle(SIA_TITLE);
-        given(repository.findById(10)).willReturn(expectedBook);
+        given(repository.findById(10L)).willReturn(Optional.of(expectedBook));
 
         Book actualBook = service.findById(10);
 
@@ -78,15 +79,9 @@ class BookServiceTest {
 
     @Test
     void shouldUpdateBook() {
-        Book actualBook = new Book();
-        actualBook.setId(10);
-        actualBook.setTitle(SIA_TITLE);
-        actualBook.setAuthorId(1L);
-        actualBook.setGenreId(1L);
+        service.update(10, SIA_TITLE, 1L, 1L);
 
-        service.update(actualBook.getId(), actualBook.getTitle(), actualBook.getAuthorId(), actualBook.getGenreId());
-
-        then(repository).should(times(1)).updateById(10, SIA_TITLE, 1, 1);
+        then(repository).should(times(1)).save(any(Book.class));
     }
 
     @Test
@@ -100,6 +95,6 @@ class BookServiceTest {
     void shouldDeleteById() {
         service.deleteById(10);
 
-        then(repository).should(times(1)).deleteById(10);
+        then(repository).should(times(1)).deleteById(10L);
     }
 }

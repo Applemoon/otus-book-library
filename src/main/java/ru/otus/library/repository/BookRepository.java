@@ -1,63 +1,10 @@
 package ru.otus.library.repository;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import ru.otus.library.domain.Book;
 
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import java.util.List;
-
 @Repository
-@RequiredArgsConstructor
-public class BookRepository {
-
-    @PersistenceContext
-    private EntityManager em;
-
-    public void create(Book book) {
-        if (book == null) return;
-        if (book.getId() == 0) {
-            em.persist(book);
-        }
-        em.merge(book);
-    }
-
-    public List<Book> findAll() {
-        return em.createQuery("select b from Book b", Book.class).getResultList();
-    }
-
-    public Book findByTitle(String title) {
-        TypedQuery<Book> query = em.createQuery("select b from Book b where b.title = :title", Book.class);
-        query.setParameter("title", title);
-        try {
-            return query.getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
-    }
-
-    public Book findById(long id) {
-        return em.find(Book.class, id);
-    }
-
-    public void updateById(long id, String title, long authorId, long genreId) {
-        Query query = em.createQuery(
-                "update Book b set b.title = :title, b.authorId = :authorId, b.genreId = :genreId where b.id = :id");
-        query.setParameter("title", title);
-        query.setParameter("id", id);
-        query.setParameter("authorId", authorId);
-        query.setParameter("genreId", genreId);
-        query.executeUpdate();
-    }
-
-    public boolean deleteById(long id) {
-        Query query = em.createQuery("delete from Book b where b.id = :id");
-        query.setParameter("id", id);
-        return query.executeUpdate() != 0;
-    }
-
+public interface BookRepository extends JpaRepository<Book, Long> {
+    Book findByTitle(String title);
 }

@@ -2,8 +2,8 @@ package ru.otus.library.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.otus.library.repository.BookRepository;
 import ru.otus.library.domain.Book;
+import ru.otus.library.repository.BookRepository;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class BookService {
         book.setTitle(title);
         book.setAuthorId(authorId);
         book.setGenreId(genreId);
-        repository.create(book);
+        repository.save(book);
     }
 
     public List<Book> findAll() {
@@ -31,15 +31,19 @@ public class BookService {
     }
 
     public Book findById(long id) {
-        return repository.findById(id);
+        return repository.findById(id).orElse(null);
     }
 
     public void update(long id, String title, long authorId, long genreId) {
         if (title == null || title.isBlank()) return;
-        repository.updateById(id, title, authorId, genreId);
+        Book book = repository.findById(id).orElse(new Book());
+        book.setTitle(title);
+        book.setAuthorId(authorId);
+        book.setGenreId(genreId);
+        repository.save(book);
     }
 
-    public boolean deleteById(long id) {
-        return repository.deleteById(id);
+    public void deleteById(long id) {
+        repository.deleteById(id);
     }
 }

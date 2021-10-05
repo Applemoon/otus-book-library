@@ -137,9 +137,7 @@ public class ApplicationEventsCommands {
         if (book == null) {
             return "Книга с id " + id + " не найдена";
         }
-        if (bookService.deleteById(id)) {
-            return "Книга удалена";
-        }
-        return "Не удалось удалить книгу";
+        bookService.deleteById(id);
+        return "Книга удалена";
     }
 }
