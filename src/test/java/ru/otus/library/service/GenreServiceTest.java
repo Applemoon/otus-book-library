@@ -33,7 +33,7 @@ class GenreServiceTest {
     void shouldCreateGenre() {
         service.create(COMEDY_NAME);
 
-        then(repository).should(times(1)).create(any(Genre.class));
+        then(repository).should(times(1)).save(any(Genre.class));
     }
 
     @Test
