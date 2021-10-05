@@ -14,9 +14,7 @@ public class GenreService {
 
     public void create(String name) {
         if (name == null || name.isBlank()) return;
-        Genre genre = new Genre();
-        genre.setName(name);
-        repository.save(genre);
+        repository.save(new Genre(name));
     }
 
     public Genre findByName(String name) {
