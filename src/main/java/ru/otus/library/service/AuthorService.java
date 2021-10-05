@@ -16,7 +16,7 @@ public class AuthorService {
         if (name == null || name.isBlank()) return;
         Author author = new Author();
         author.setName(name);
-        repository.create(author);
+        repository.save(author);
     }
 
     public Author findByName(String name) {

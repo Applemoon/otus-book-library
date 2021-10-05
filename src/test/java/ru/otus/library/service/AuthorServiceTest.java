@@ -33,7 +33,7 @@ class AuthorServiceTest {
     void shouldCreateAuthor() {
         service.create(PALAHNIUK_NAME);
 
-        then(repository).should(times(1)).create(any(Author.class));
+        then(repository).should(times(1)).save(any(Author.class));
     }
 
     @Test
